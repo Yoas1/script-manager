@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link id="favicon" rel="icon" type="image/x-icon" href="/static/favicon.ico">
+    <title>Yoas1 - Script Execution Results</title>
+    <link rel="stylesheet" href="/static/styles-results.css">
+</head>
+<body>
+    <a href="/" class="button">Editor</a>
+    <div class="container">
+        <h1>Script Execution Results</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>Filename</th>
+                    <th>Start Time</th>
+                    <th>End Time</th>
+                    <th>Duration (seconds)</th>
+                    <th>Result</th>
+                </tr>
+            </thead>
+            <tbody id="results-table-body">
+
+            </tbody>
+        </table>
+    </div>
+    <script>
+
+        async function fetchResults() {
+            try {
+                const response = await fetch('/api/results');
+                const data = await response.json();
+
+                const tableBody = document.getElementById('results-table-body');
+                tableBody.innerHTML = '';
+
+                data.forEach(item => {
+                    const row = document.createElement('tr');
+
+                    const filenameCell = document.createElement('td');
+                    filenameCell.textContent = item.filename;
+                    row.appendChild(filenameCell);
+
+                    const startTimeCell = document.createElement('td');
+                    startTimeCell.textContent = new Date(item.start_time).toLocaleString();
+                    row.appendChild(startTimeCell);
+
+                    const endTimeCell = document.createElement('td');
+                    endTimeCell.textContent = new Date(item.end_time).toLocaleString();
+                    row.appendChild(endTimeCell);
+
+                    const durationCell = document.createElement('td');
+                    durationCell.textContent = item.duration.toFixed(2);
+                    row.appendChild(durationCell);
+
+                    const resultCell = document.createElement('td');
+                    resultCell.textContent = item.result;
+                    row.appendChild(resultCell);
+
+                    tableBody.appendChild(row);
+                });
+            } catch (error) {
+                console.error('Error fetching script results:', error);
+            }
+        }
+
+
+        window.onload = fetchResults;
+    </script>
+</body>
+</html>
